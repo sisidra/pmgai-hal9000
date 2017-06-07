@@ -24,16 +24,16 @@ class TextEvent(vispy.util.event.Event):
 
 class TerminalWindow(object):
     """Creates and manages a window used for terminal input. You can setup notifications via
-    `self.events` that emits notifications for user inputs and user commands. 
+    `self.events` that emits notifications for user inputs and user commands.
     """
 
     def __init__(self):
         """Constructor sets up events, creates a canvas and data for processing input.
-        """ 
+        """
         self.events = vispy.util.event.EmitterGroup(
                                 user_input=TextEvent,
                                 user_command=TextEvent)
- 
+
         self._create_canvas()
         self._create_terminal()
 
@@ -46,7 +46,7 @@ class TerminalWindow(object):
                                 bgcolor='#F0F0F0',
                                 show=False,
                                 keys='interactive')
-        
+
         self.widget = self.canvas.central_widget
         self.widget.set_transform('matrix')
         self.widget.transform.translate((0.0, -CONSOLE_LINEOFFSET))
@@ -64,7 +64,7 @@ class TerminalWindow(object):
         """Setup everything that's necessary for processing key events and the text.
         """
         self.text_buffer = ''
-        self.entry_offset = CONSOLE_LINEOFFSET - CONSOLE_LINEHEIGHT / 2 + self.canvas.size[1] 
+        self.entry_offset = CONSOLE_LINEOFFSET - CONSOLE_LINEHEIGHT / 2 + self.canvas.size[1]
         self.entry_blink = 0
         self.entries = []
 
@@ -81,7 +81,7 @@ class TerminalWindow(object):
         self.scroll(self.old_size[1] - evt.size[1])
         self.old_size = evt.size
 
-    def log(self, text, align='left', color='#1463A3'):
+    def log(self, text, align='left', color='#1463A3', face='Questrial', font_size=20):
         assert align in ('left', 'right', 'center')
 
         if align == 'center':
@@ -94,10 +94,10 @@ class TerminalWindow(object):
         if text != '':
             entry = vispy.scene.visuals.Text(parent=self.widget,
                                          text=text,
-                                         face='Questrial',
+                                         face=face,
                                          color=color,
                                          bold=False,
-                                         font_size=20,
+                                         font_size=font_size,
                                          anchor_x=align,
                                          anchor_y='bottom',
                                          pos=[position, self.entry_offset, 0.0])
@@ -105,7 +105,7 @@ class TerminalWindow(object):
 
         self.scroll(CONSOLE_LINEHEIGHT)
         self.entry_offset += CONSOLE_LINEHEIGHT
-        
+
         self.entries[0].pos[0][1] = self.entry_offset
 
     def show_input(self, text):
@@ -128,7 +128,7 @@ class TerminalWindow(object):
         if c.name == 'Backspace':
             self.text_buffer = self.text_buffer[:-1]
 
-        self.show_input(self.text_buffer)       
+        self.show_input(self.text_buffer)
 
     def on_key_char(self, text):
         self.text_buffer += text
